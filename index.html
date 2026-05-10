@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal do Aluno</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--crimson:#9b1c2e;--crimson-dark:#7a1522;--crimson-light:#c0283e;--gold:#c9a84c;--gold-light:#e2c47a;--white:#ffffff;--off-white:#f8f5f0;--warm-gray:#e8e2d9;--text-dark:#1a1208;--text-mid:#4a3f30;--text-light:#7a6e62;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lato',sans-serif;background:var(--off-white);color:var(--text-dark);min-height:100vh;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* NAV */
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(15,5,5,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.2);}
+.nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.nav-crest{width:36px;height:36px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nav-logo-text{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--white);letter-spacing:1px;text-transform:uppercase;line-height:1.2;}
+.nav-logo-sub{font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-link{color:rgba(255,255,255,.7);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:color .2s;font-weight:700;}
+.nav-link:hover{color:var(--gold);}
+.nav-actions{display:flex;align-items:center;gap:12px;}
+.btn-nav{padding:8px 20px;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.btn-nav:hover{background:var(--gold);color:var(--text-dark);}
+
+/* HERO */
+#screen-menu{min-height:100vh;}
+.hero{position:relative;height:100vh;min-height:640px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,5,5,.25) 0%,rgba(15,5,5,.65) 55%,rgba(15,5,5,.92) 100%),url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&q=80') center/cover no-repeat;animation:heroZoom 18s ease-in-out infinite alternate;}
+@keyframes heroZoom{from{transform:scale(1.04);}to{transform:scale(1.0);}}
+.hero-content{position:relative;text-align:center;padding:0 24px;max-width:800px;animation:fadeUp .9s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:none;}}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--gold);opacity:.6;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(44px,7vw,80px);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-1px;margin-bottom:20px;}
+.hero-title em{font-style:italic;color:var(--gold-light);}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.7);font-weight:300;line-height:1.7;max-width:480px;margin:0 auto 40px;letter-spacing:.3px;}
+.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-hero-primary{padding:16px 36px;background:var(--crimson);color:var(--white);font-family:'Lato',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;transition:all .25s;}
+.btn-hero-primary:hover{background:var(--crimson-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(155,28,46,.4);}
+.btn-hero-outline{padding:16px 36px;background:transparent;color:var(--white);font-family:'Lato',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:1.5px solid rgba(255,255,255,.5);cursor:pointer;transition:all .25s;}
+.btn-hero-outline:hover{border-color:var(--white);background:rgba(255,255,255,.08);}
+.hero-stats{position:absolute;bottom:0;left:0;right:0;display:flex;background:rgba(155,28,46,.92);backdrop-filter:blur(8px);}
+.hero-stat{flex:1;padding:20px;text-align:center;border-right:1px solid rgba(255,255,255,.15);}
+.hero-stat:last-child{border-right:none;}
+.hero-stat-num{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--white);}
+.hero-stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:2px;}
+
+/* ROLE SECTION */
+.role-section{background:var(--white);padding:80px 48px;}
+.section-eyebrow{text-align:center;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--crimson);margin-bottom:10px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,40px);font-weight:700;text-align:center;color:var(--text-dark);margin-bottom:52px;}
+.role-cards{display:flex;gap:32px;max-width:880px;margin:0 auto;flex-wrap:wrap;justify-content:center;}
+.role-card{flex:1;min-width:300px;max-width:400px;border:1px solid var(--warm-gray);cursor:pointer;transition:all .3s;overflow:hidden;}
+.role-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.1);transform:translateY(-4px);}
+.role-card-img{height:190px;position:relative;overflow:hidden;}
+.rc-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s ease;}
+.role-card:hover .rc-bg{transform:scale(1.06);}
+.role-card.student .rc-bg{background-image:linear-gradient(160deg,#1a2a4a 0%,#2d4a8a 100%);}
+.role-card.teacher .rc-bg{background-image:linear-gradient(160deg,var(--crimson-dark) 0%,#c0283e 100%);}
+.rc-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:60px;}
+.role-card-body{padding:26px 30px 30px;background:var(--white);}
+.rc-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;}
+.rc-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text-dark);margin-bottom:10px;}
+.rc-desc{font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:20px;}
+.rc-features{list-style:none;margin-bottom:26px;}
+.rc-features li{font-size:13px;color:var(--text-mid);padding:5px 0;border-bottom:1px solid var(--warm-gray);display:flex;align-items:center;gap:8px;}
+.rc-features li::before{content:'';width:14px;height:1px;background:var(--crimson);flex-shrink:0;}
+.btn-rc{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;width:100%;transition:all .2s;}
+.btn-rc.student{background:#1a2a4a;color:var(--white);}
+.btn-rc.student:hover{background:#253d6e;}
+.btn-rc.teacher{background:var(--crimson);color:var(--white);}
+.btn-rc.teacher:hover{background:var(--crimson-light);}
+
+/* LOGIN */
+#screen-login{min-height:100vh;}
+.login-wrap{display:flex;min-height:100vh;}
+.login-left{flex:1;position:relative;display:none;}
+@media(min-width:900px){.login-left{display:flex;}}
+.login-left-bg{position:absolute;inset:0;background:linear-gradient(to bottom right,rgba(15,5,5,.55),rgba(155,28,46,.7)),url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=900&q=80') center/cover;}
+.login-left-inner{position:relative;padding:80px 56px;display:flex;flex-direction:column;justify-content:flex-end;height:100%;}
+.ll-tag{display:inline-block;padding:5px 14px;background:var(--gold);color:var(--text-dark);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;}
+.ll-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:var(--white);line-height:1.1;margin-bottom:14px;}
+.ll-desc{font-size:14px;color:rgba(255,255,255,.7);line-height:1.7;max-width:340px;}
+.login-right{width:100%;max-width:520px;background:var(--off-white);display:flex;align-items:center;justify-content:center;padding:40px 32px;}
+.login-form-box{width:100%;max-width:380px;}
+.lf-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--crimson);margin-bottom:6px;}
+.lf-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--text-dark);line-height:1.2;margin-bottom:8px;}
+.lf-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;}
+.lf-badge.student{background:rgba(26,42,74,.1);color:#1a2a4a;border-left:3px solid #1a2a4a;}
+.lf-badge.teacher{background:rgba(155,28,46,.1);color:var(--crimson);border-left:3px solid var(--crimson);}
+.form-field{margin-bottom:18px;}
+.form-label{display:block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:7px;}
+.form-input{width:100%;background:var(--white);border:1px solid var(--warm-gray);border-bottom:2px solid var(--warm-gray);padding:12px 15px;color:var(--text-dark);font-family:'Lato',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.form-input:focus{border-bottom-color:var(--crimson);}
+.form-hint{font-size:11px;color:var(--text-light);margin-top:4px;font-style:italic;}
+.error-msg{background:#fdf0f1;border-left:3px solid var(--crimson);color:var(--crimson);padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;}
+.btn-login{width:100%;padding:14px;border:none;font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;}
+.btn-login.student{background:#1a2a4a;color:var(--white);}
+.btn-login.student:hover{background:#253d6e;}
+.btn-login.teacher{background:var(--crimson);color:var(--white);}
+.btn-login.teacher:hover{background:var(--crimson-light);}
+.back-link{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);cursor:pointer;margin-top:18px;transition:color .2s;}
+.back-link:hover{color:var(--crimson);}
+
+/* DASHBOARD */
+#screen-student,#screen-teacher{min-height:100vh;display:flex;flex-direction:column;}
+.dash-nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:58px;background:var(--text-dark);border-bottom:3px solid var(--crimson);}
+.dash-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--white);letter-spacing:.5px;}
+.dash-logo span{color:var(--gold);}
+.dash-user{display:flex;align-items:center;gap:14px;}
+.dash-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
+.dash-avatar.student{background:#1a2a4a;color:var(--white);border:2px solid rgba(255,255,255,.15);}
+.dash-avatar.teacher{background:var(--crimson);color:var(--white);border:2px solid rgba(255,255,255,.15);}
+.dash-uinfo{text-align:right;}
+.dash-uname{font-size:13px;font-weight:700;color:var(--white);}
+.dash-urole{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px;text-transform:uppercase;}
+.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.55);padding:6px 13px;font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{border-color:var(--crimson);color:#ff8080;}
+.dash-body{display:flex;flex:1;}
+.sidebar{width:216px;background:var(--white);border-right:1px solid var(--warm-gray);padding:28px 0;flex-shrink:0;}
+.sidebar-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text-light);padding:0 22px;margin-bottom:6px;margin-top:18px;}
+.sidebar-label:first-child{margin-top:0;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 22px;font-size:13px;font-weight:700;color:var(--text-mid);cursor:pointer;transition:all .2s;border-left:3px solid transparent;letter-spacing:.3px;}
+.nav-item:hover{background:var(--off-white);color:var(--text-dark);}
+.nav-item.active{background:var(--off-white);color:var(--text-dark);border-left-color:var(--crimson);}
+.nav-icon{font-size:14px;width:17px;text-align:center;flex-shrink:0;}
+.main-content{flex:1;padding:36px 40px;overflow-y:auto;background:var(--off-white);}
+.page{display:none;}.page.active{display:block;}
+.page-header{padding-bottom:22px;margin-bottom:28px;border-bottom:1px solid var(--warm-gray);}
+.page-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--crimson);margin-bottom:3px;}
+.page-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--text-dark);}
+.page-sub{font-size:13px;color:var(--text-light);margin-top:3px;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:18px;margin-bottom:28px;}
+.stat-card{background:var(--white);border:1px solid var(--warm-gray);padding:22px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--crimson);}
+.stat-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:7px;}
+.stat-value{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--text-dark);line-height:1;}
+.stat-note{font-size:12px;color:var(--text-light);margin-top:5px;}
+.table-wrap{background:var(--white);border:1px solid var(--warm-gray);margin-bottom:26px;}
+.table-head{padding:16px 22px;border-bottom:2px solid var(--crimson);display:flex;align-items:center;justify-content:space-between;}
+.table-head-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text-dark);}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 18px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text-light);text-align:left;background:var(--off-white);border-bottom:1px solid var(--warm-gray);}
+td{padding:12px 18px;font-size:13px;border-bottom:1px solid var(--warm-gray);color:var(--text-mid);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#faf8f5;}
+.badge{display:inline-block;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.badge-green{background:#e8f5f0;color:#1a7a50;}
+.badge-yellow{background:#fdf6e3;color:#8a5e00;}
+.badge-red{background:#fdf0f1;color:var(--crimson);}
+.badge-blue{background:#eef2fb;color:#1a3a7a;}
+.notice-item{background:var(--white);border:1px solid var(--warm-gray);border-left:4px solid var(--crimson);padding:18px 22px;margin-bottom:12px;transition:border-left-color .2s;}
+.notice-item:hover{border-left-color:var(--gold);}
+.notice-item.yellow{border-left-color:var(--gold);}
+.notice-item.green{border-left-color:#2a9d6f;}
+.notice-item.red{border-left-color:#d62b2b;}
+.notice-top{display:flex;align-items:center;gap:10px;margin-bottom:5px;}
+.notice-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text-dark);}
+.notice-date{font-size:11px;color:var(--text-light);margin-left:auto;}
+.notice-body{font-size:13px;color:var(--text-mid);line-height:1.7;}
+.schedule-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+.class-card{background:var(--white);border:1px solid var(--warm-gray);border-top:3px solid var(--crimson);padding:18px;transition:all .2s;}
+.class-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.07);}
+.class-day{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--crimson);margin-bottom:6px;}
+.class-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:4px;}
+.class-time{font-size:12px;color:var(--text-light);}
+.class-room{font-size:12px;color:var(--text-light);margin-top:2px;}
+.prova-item{background:var(--white);border:1px solid var(--warm-gray);padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:22px;transition:box-shadow .2s;}
+.prova-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);}
+.prova-date-box{background:var(--crimson);color:var(--white);text-align:center;padding:10px 14px;min-width:56px;flex-shrink:0;}
+.prova-day{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;}
+.prova-month{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.8;}
+.prova-info{flex:1;}
+.prova-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text-dark);margin-bottom:2px;}
+.prova-meta{font-size:12px;color:var(--text-light);}
+.form-panel{background:var(--white);border:1px solid var(--warm-gray);padding:30px;max-width:560px;margin-bottom:26px;}
+.form-panel-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text-dark);padding-bottom:14px;margin-bottom:22px;border-bottom:2px solid var(--crimson);}
+.form-row{display:flex;gap:14px;}
+.form-row .form-field{flex:1;}
+.btn-submit{padding:12px 28px;background:var(--crimson);color:var(--white);border:none;font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;margin-top:6px;display:inline-flex;align-items:center;gap:7px;}
+.btn-submit:hover{background:var(--crimson-light);}
+.success-toast{display:none;background:#e8f5f0;border-left:3px solid #2a9d6f;color:#1a5c3a;padding:10px 14px;font-size:13px;margin-top:12px;}
+@media(max-width:700px){
+  .sidebar{display:none;}.main-content{padding:20px;}.dash-nav{padding:0 16px;}
+  .site-nav{padding:0 16px;}.hero-stats{display:none;}.stats-row{grid-template-columns:1fr 1fr;}
+  .nav-links{display:none;}.nav-actions{gap:6px;}.btn-nav{padding:6px 12px;font-size:10px;}
+}
+</style>
+</head>
+<body>
+
+<!-- MENU -->
+<div id="screen-menu" class="screen active">
+  <nav class="site-nav">
+    <div class="nav-logo" onclick="goTo('menu')">
+      <div class="nav-crest">🎓</div>
+      <div><div class="nav-logo-text">Portal do Aluno</div><div class="nav-logo-sub">Sistema Acadêmico</div></div>
+    </div>
+    <div class="nav-links">
+      <span class="nav-link">Início</span>
+      <span class="nav-link">Cursos</span>
+      <span class="nav-link">Sobre</span>
+      <span class="nav-link">Contato</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-nav" onclick="goToLogin('student')">Aluno</button>
+      <button class="btn-nav" onclick="goToLogin('teacher')">Professor</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Sistema Acadêmico Integrado</div>
+      <h1 class="hero-title">Sua Jornada<br><em>Acadêmica</em><br>Começa Aqui</h1>
+      <p class="hero-sub">Acesse notas, horários, provas e comunicados em um único lugar. Simples, rápido e seguro.</p>
+      <div class="hero-ctas">
+        <button class="btn-hero-primary" onclick="goToLogin('student')">Entrar como Aluno →</button>
+        <button class="btn-hero-outline" onclick="goToLogin('teacher')">Área do Professor</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">2.400+</div><div class="hero-stat-label">Alunos Ativos</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">120</div><div class="hero-stat-label">Professores</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">48</div><div class="hero-stat-label">Turmas</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">98%</div><div class="hero-stat-label">Satisfação</div></div>
+    </div>
+  </div>
+
+  <section class="role-section">
+    <div class="section-eyebrow">Acesso ao Sistema</div>
+    <h2 class="section-title">Como deseja entrar?</h2>
+    <div class="role-cards">
+      <div class="role-card student" onclick="goToLogin('student')">
+        <div class="role-card-img"><div class="rc-bg"></div><div class="rc-overlay">👨‍🎓</div></div>
+        <div class="role-card-body">
+          <div class="rc-label">Acesso</div>
+          <div class="rc-title">Sou Aluno</div>
+          <p class="rc-desc">Acompanhe seu desempenho acadêmico, horários e comunicados da instituição.</p>
+          <ul class="rc-features">
+            <li>Boletim e notas por bimestre</li>
+            <li>Grade horária de aulas</li>
+            <li>Calendário de provas</li>
+            <li>Avisos e comunicados</li>
+          </ul>
+          <button class="btn-rc student">Entrar como Aluno →</button>
+        </div>
+      </div>
+      <div class="role-card teacher" onclick="goToLogin('teacher')">
+        <div class="role-card-img"><div class="rc-bg"></div><div class="rc-overlay">👩‍🏫</div></div>
+        <div class="role-card-body">
+          <div class="rc-label">Acesso</div>
+          <div class="rc-title">Sou Professor</div>
+          <p class="rc-desc">Gerencie turmas, lance notas, agende avaliações e publique avisos.</p>
+          <ul class="rc-features">
+            <li>Visualizar e gerenciar turma</li>
+            <li>Inserir notas por bimestre</li>
+            <li>Marcar provas e avaliações</li>
+            <li>Publicar avisos oficiais</li>
+          </ul>
+          <button class="btn-rc teacher">Entrar como Professor →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen">
+  <div class="login-wrap">
+    <div class="login-left">
+      <div class="login-left-bg"></div>
+      <div class="login-left-inner">
+        <div class="ll-tag">Sistema Acadêmico</div>
+        <div class="ll-title">Portal<br>do Aluno</div>
+        <p class="ll-desc">Acesse sua área pessoal e acompanhe toda a sua vida acadêmica em um único lugar.</p>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-form-box">
+        <div class="lf-eyebrow">Autenticação</div>
+        <div class="lf-title">Bem-vindo de volta</div>
+        <div id="login-badge" class="lf-badge student">👨‍🎓 Área do Aluno</div>
+        <div id="error-msg" class="error-msg">⚠️ Usuário ou senha incorretos.</div>
+        <div class="form-field">
+          <label class="form-label">Usuário / Matrícula</label>
+          <input type="text" id="login-user" class="form-input" placeholder="Digite seu usuário">
+          <div class="form-hint" id="login-hint">Dica: aluno / senha123</div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Senha</label>
+          <input type="password" id="login-pass" class="form-input" placeholder="••••••••">
+        </div>
+        <button id="login-btn" class="btn-login student" onclick="doLogin()">Acessar Sistema →</button>
+        <div class="back-link" onclick="goTo('menu')">← Voltar ao início</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD ALUNO -->
+<div id="screen-student" class="screen">
+  <nav class="dash-nav">
+    <div class="dash-logo">Portal do <span>Aluno</span></div>
+    <div class="dash-user">
+      <div class="dash-uinfo"><div class="dash-uname">João Pedro Silva</div><div class="dash-urole">Aluno · 3º Ano B</div></div>
+      <div class="dash-avatar student">JP</div>
+      <button class="btn-logout" onclick="goTo('menu')">Sair</button>
+    </div>
+  </nav>
+  <div class="dash-body">
+    <div class="sidebar">
+      <div class="sidebar-label">Menu</div>
+      <div class="nav-item active" onclick="showPage('student','boletim',this)"><span class="nav-icon">📊</span> Boletim</div>
+      <div class="nav-item" onclick="showPage('student','aulas',this)"><span class="nav-icon">📚</span> Aulas</div>
+      <div class="nav-item" onclick="showPage('student','provas',this)"><span class="nav-icon">📝</span> Provas</div>
+      <div class="nav-item" onclick="showPage('student','avisos',this)"><span class="nav-icon">🔔</span> Avisos</div>
+    </div>
+    <div class="main-content">
+
+      <div id="student-boletim" class="page active">
+        <div class="page-header"><div class="page-eyebrow">Desempenho Acadêmico</div><div class="page-title">Boletim</div><div class="page-sub">2º Semestre · 2025 — Turma 3B</div></div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Média Geral</div><div class="stat-value">8,4</div><div class="stat-note">↑ +0,3 vs bimestre anterior</div></div>
+          <div class="stat-card"><div class="stat-label">Frequência</div><div class="stat-value">92%</div><div class="stat-note">87 de 95 aulas</div></div>
+          <div class="stat-card"><div class="stat-label">Situação</div><div class="stat-value" style="font-size:20px;padding-top:8px">Regular</div><div class="stat-note">Todas as matérias aprovadas</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><div class="table-head-title">Notas por Disciplina</div></div>
+          <table>
+            <thead><tr><th>Disciplina</th><th>Professor</th><th>B1</th><th>B2</th><th>B3</th><th>B4</th><th>Média</th><th>Situação</th></tr></thead>
+            <tbody>
+              <tr><td>Matemática</td><td>Prof. Carlos</td><td>8,0</td><td>7,5</td><td>9,0</td><td>8,5</td><td><b>8,3</b></td><td><span class="badge badge-green">Aprovado</span></td></tr>
+              <tr><td>Português</td><td>Profa. Ana</td><td>9,0</td><td>8,5</td><td>9,5</td><td>9,0</td><td><b>9,0</b></td><td><span class="badge badge-green">Aprovado</span></td></tr>
+              <tr><td>História</td><td>Prof. Marcos</td><td>7,0</td><td>6,5</td><td>7,5</td><td>7,0</td><td><b>7,0</b></td><td><span class="badge badge-green">Aprovado</span></td></tr>
+              <tr><td>Geografia</td><td>Profa. Lucia</td><td>8,5</td><td>9,0</td><td>8,0</td><td>8,5</td><td><b>8,5</b></td><td><span class="badge badge-green">Aprovado</span></td></tr>
+              <tr><td>Física</td><td>Prof. Roberto</td><td>6,0</td><td>5,5</td><td>7,0</td><td>6,5</td><td><b>6,3</b></td><td><span class="badge badge-yellow">Atenção</span></td></tr>
+              <tr><td>Química</td><td>Profa. Sandra</td><td>7,5</td><td>8,0</td><td>7,0</td><td>8,0</td><td><b>7,6</b></td><td><span class="badge badge-green">Aprovado</span></td></tr>
+              <tr><td>Biologia</td><td>Prof. Felipe</td><td>9,5</td><td>9,0</td><td>9,5</td><td>10,0</td><td><b>9,5</b></td><td><span class="badge badge-green">Aprovado</span></td></tr>
+              <tr><td>Inglês</td><td>Profa. Karen</td><td>8,0</td><td>8,5</td><td>9,0</td><td>8,5</td><td><b>8,5</b></td><td><span class="badge badge-green">Aprovado</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="student-aulas" class="page">
+        <div class="page-header"><div class="page-eyebrow">Grade Horária</div><div class="page-title">Aulas</div><div class="page-sub">Semana regular · 3º Ano B</div></div>
+        <div class="schedule-grid">
+          <div class="class-card"><div class="class-day">Segunda-feira</div><div class="class-name">Matemática</div><div class="class-time">07:30 – 09:00</div><div class="class-room">🏫 Sala 12 · Prof. Carlos</div></div>
+          <div class="class-card"><div class="class-day">Segunda-feira</div><div class="class-name">Português</div><div class="class-time">09:15 – 10:45</div><div class="class-room">🏫 Sala 12 · Profa. Ana</div></div>
+          <div class="class-card"><div class="class-day">Terça-feira</div><div class="class-name">Física</div><div class="class-time">07:30 – 09:00</div><div class="class-room">🔬 Lab. Ciências · Prof. Roberto</div></div>
+          <div class="class-card"><div class="class-day">Terça-feira</div><div class="class-name">História</div><div class="class-time">09:15 – 10:45</div><div class="class-room">🏫 Sala 12 · Prof. Marcos</div></div>
+          <div class="class-card"><div class="class-day">Quarta-feira</div><div class="class-name">Química</div><div class="class-time">07:30 – 09:00</div><div class="class-room">🔬 Lab. Química · Profa. Sandra</div></div>
+          <div class="class-card"><div class="class-day">Quarta-feira</div><div class="class-name">Biologia</div><div class="class-time">09:15 – 10:45</div><div class="class-room">🏫 Sala 12 · Prof. Felipe</div></div>
+          <div class="class-card"><div class="class-day">Quinta-feira</div><div class="class-name">Geografia</div><div class="class-time">07:30 – 09:00</div><div class="class-room">🏫 Sala 12 · Profa. Lucia</div></div>
+          <div class="class-card"><div class="class-day">Quinta-feira</div><div class="class-name">Inglês</div><div class="class-time">09:15 – 10:45</div><div class="class-room">🌐 Sala Idiomas · Profa. Karen</div></div>
+          <div class="class-card"><div class="class-day">Sexta-feira</div><div class="class-name">Matemática</div><div class="class-time">07:30 – 09:00</div><div class="class-room">🏫 Sala 12 · Prof. Carlos</div></div>
+          <div class="class-card"><div class="class-day">Sexta-feira</div><div class="class-name">Ed. Física</div><div class="class-time">09:15 – 10:45</div><div class="class-room">⚽ Quadra · Prof. Thiago</div></div>
+        </div>
+      </div>
+
+      <div id="student-provas" class="page">
+        <div class="page-header"><div class="page-eyebrow">Calendário</div><div class="page-title">Provas Agendadas</div><div class="page-sub">2º Semestre · 2025</div></div>
+        <div id="student-provas-list"></div>
+      </div>
+
+      <div id="student-avisos" class="page">
+        <div class="page-header"><div class="page-eyebrow">Comunicados</div><div class="page-title">Avisos</div><div class="page-sub">Informações oficiais da instituição</div></div>
+        <div id="student-avisos-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD PROFESSOR -->
+<div id="screen-teacher" class="screen">
+  <nav class="dash-nav">
+    <div class="dash-logo">Portal do <span>Aluno</span></div>
+    <div class="dash-user">
+      <div class="dash-uinfo"><div class="dash-uname">Profa. Ana Souza</div><div class="dash-urole">Professora · Português</div></div>
+      <div class="dash-avatar teacher">AS</div>
+      <button class="btn-logout" onclick="goTo('menu')">Sair</button>
+    </div>
+  </nav>
+  <div class="dash-body">
+    <div class="sidebar">
+      <div class="sidebar-label">Menu</div>
+      <div class="nav-item active" onclick="showPage('teacher','turma',this)"><span class="nav-icon">👥</span> Ver Turma</div>
+      <div class="nav-item" onclick="showPage('teacher','notas',this)"><span class="nav-icon">✏️</span> Inserir Notas</div>
+      <div class="nav-item" onclick="showPage('teacher','provas',this)"><span class="nav-icon">📋</span> Marcar Prova</div>
+      <div class="nav-item" onclick="showPage('teacher','avisos',this)"><span class="nav-icon">📢</span> Avisos</div>
+    </div>
+    <div class="main-content">
+
+      <div id="teacher-turma" class="page active">
+        <div class="page-header"><div class="page-eyebrow">Gestão Acadêmica</div><div class="page-title">Turma 3B</div><div class="page-sub">Português · 28 alunos matriculados</div></div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Alunos</div><div class="stat-value">28</div></div>
+          <div class="stat-card"><div class="stat-label">Média da Turma</div><div class="stat-value">8,1</div></div>
+          <div class="stat-card"><div class="stat-label">Freq. Média</div><div class="stat-value">89%</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><div class="table-head-title">Lista de Alunos</div></div>
+          <table>
+            <thead><tr><th>Nº</th><th>Nome</th><th>Matrícula</th><th>B1</th><th>B2</th><th>B3</th><th>B4</th><th>Freq.</th><th>Situação</th></tr></thead>
+            <tbody>
+              <tr><td>01</td><td>Ana Beatriz Costa</td><td>2025001</td><td>9,0</td><td>8,5</td><td>—</td><td>—</td><td>95%</td><td><span class="badge badge-green">Regular</span></td></tr>
+              <tr><td>02</td><td>Bruno Henrique Lima</td><td>2025002</td><td>7,5</td><td>8,0</td><td>—</td><td>—</td><td>88%</td><td><span class="badge badge-green">Regular</span></td></tr>
+              <tr><td>03</td><td>Camila Rodrigues</td><td>2025003</td><td>6,0</td><td>5,5</td><td>—</td><td>—</td><td>72%</td><td><span class="badge badge-red">Atenção</span></td></tr>
+              <tr><td>04</td><td>Daniel Ferreira</td><td>2025004</td><td>9,5</td><td>10,0</td><td>—</td><td>—</td><td>98%</td><td><span class="badge badge-green">Regular</span></td></tr>
+              <tr><td>05</td><td>Eduarda Nunes</td><td>2025005</td><td>8,0</td><td>7,5</td><td>—</td><td>—</td><td>85%</td><td><span class="badge badge-green">Regular</span></td></tr>
+              <tr><td>06</td><td>Felipe Moraes</td><td>2025006</td><td>7,0</td><td>6,0</td><td>—</td><td>—</td><td>80%</td><td><span class="badge badge-yellow">Atenção</span></td></tr>
+              <tr><td>07</td><td>Gabriela Santos</td><td>2025007</td><td>9,0</td><td>9,5</td><td>—</td><td>—</td><td>97%</td><td><span class="badge badge-green">Regular</span></td></tr>
+              <tr><td>08</td><td>João Pedro Silva</td><td>2025008</td><td>9,0</td><td>8,5</td><td>—</td><td>—</td><td>92%</td><td><span class="badge badge-green">Regular</span></td></tr>
+              <tr><td>09</td><td>Larissa Carvalho</td><td>2025009</td><td>6,5</td><td>5,0</td><td>—</td><td>—</td><td>68%</td><td><span class="badge badge-red">Atenção</span></td></tr>
+              <tr><td>10</td><td>Lucas Almeida</td><td>2025010</td><td>8,5</td><td>9,0</td><td>—</td><td>—</td><td>91%</td><td><span class="badge badge-green">Regular</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="teacher-notas" class="page">
+        <div class="page-header"><div class="page-eyebrow">Lançamento</div><div class="page-title">Inserir Notas</div><div class="page-sub">Registro de notas por bimestre</div></div>
+        <div class="form-panel">
+          <div class="form-panel-title">Nova Nota</div>
+          <div class="form-row">
+            <div class="form-field"><label class="form-label">Disciplina</label><select class="form-input" id="nota-disc"><option>Português</option><option>Matemática</option><option>História</option><option>Física</option><option>Química</option><option>Biologia</option><option>Geografia</option><option>Inglês</option></select></div>
+            <div class="form-field"><label class="form-label">Bimestre</label><select class="form-input" id="nota-bim"><option>1º Bimestre</option><option>2º Bimestre</option><option>3º Bimestre</option><option>4º Bimestre</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label class="form-label">Aluno</label><select class="form-input" id="nota-aluno"><option>Ana Beatriz Costa</option><option>Bruno Henrique Lima</option><option>Camila Rodrigues</option><option>Daniel Ferreira</option><option>Eduarda Nunes</option><option>Felipe Moraes</option><option>Gabriela Santos</option><option>João Pedro Silva</option><option>Larissa Carvalho</option><option>Lucas Almeida</option></select></div>
+            <div class="form-field"><label class="form-label">Nota (0–10)</label><input type="number" class="form-input" id="nota-valor" min="0" max="10" step="0.1" placeholder="Ex: 8,5"></div>
+          </div>
+          <button class="btn-submit" onclick="salvarNota()">💾 Salvar Nota</button>
+          <div id="nota-toast" class="success-toast">✅ Nota registrada com sucesso!</div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><div class="table-head-title">Lançamentos Recentes</div></div>
+          <table><thead><tr><th>Aluno</th><th>Disciplina</th><th>Bimestre</th><th>Nota</th><th>Data</th></tr></thead>
+          <tbody id="notas-recentes">
+            <tr><td>Daniel Ferreira</td><td>Português</td><td>2º Bimestre</td><td><b>10,0</b></td><td>05/05/2025</td></tr>
+            <tr><td>Ana Beatriz Costa</td><td>Português</td><td>2º Bimestre</td><td><b>8,5</b></td><td>05/05/2025</td></tr>
+            <tr><td>Lucas Almeida</td><td>Português</td><td>2º Bimestre</td><td><b>9,0</b></td><td>05/05/2025</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <div id="teacher-provas" class="page">
+        <div class="page-header"><div class="page-eyebrow">Agendamento</div><div class="page-title">Marcar Prova</div><div class="page-sub">Calendário de avaliações da turma</div></div>
+        <div class="form-panel">
+          <div class="form-panel-title">Agendar Avaliação</div>
+          <div class="form-row">
+            <div class="form-field"><label class="form-label">Disciplina</label><select class="form-input" id="prova-disc"><option>Português</option><option>Matemática</option><option>História</option><option>Física</option></select></div>
+            <div class="form-field"><label class="form-label">Turma</label><select class="form-input"><option>3º Ano B</option><option>3º Ano A</option><option>2º Ano B</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label class="form-label">Data</label><input type="date" class="form-input" id="prova-data"></div>
+            <div class="form-field"><label class="form-label">Horário</label><input type="time" class="form-input" id="prova-hora" value="07:30"></div>
+          </div>
+          <div class="form-field"><label class="form-label">Conteúdo / Observação</label><input type="text" class="form-input" id="prova-obs" placeholder="Ex: Capítulos 5 ao 8…"></div>
+          <button class="btn-submit" onclick="salvarProva()">📅 Agendar Prova</button>
+          <div id="prova-toast" class="success-toast">✅ Prova agendada com sucesso!</div>
+        </div>
+        <div id="teacher-provas-list"></div>
+      </div>
+
+      <div id="teacher-avisos" class="page">
+        <div class="page-header"><div class="page-eyebrow">Comunicados</div><div class="page-title">Publicar Aviso</div><div class="page-sub">Comunicados oficiais para a turma</div></div>
+        <div class="form-panel">
+          <div class="form-panel-title">Novo Comunicado</div>
+          <div class="form-field"><label class="form-label">Título</label><input type="text" class="form-input" id="aviso-titulo" placeholder="Título do comunicado"></div>
+          <div class="form-field"><label class="form-label">Mensagem</label><textarea class="form-input" id="aviso-msg" rows="4" placeholder="Escreva o comunicado aqui…" style="resize:vertical;line-height:1.6"></textarea></div>
+          <div class="form-field"><label class="form-label">Categoria</label><select class="form-input" id="aviso-cat"><option value="blue">📘 Informativo</option><option value="yellow">⚠️ Atenção</option><option value="green">✅ Positivo</option><option value="red">🔴 Urgente</option></select></div>
+          <button class="btn-submit" onclick="salvarAviso()">📤 Publicar</button>
+          <div id="aviso-toast" class="success-toast">✅ Aviso publicado com sucesso!</div>
+        </div>
+        <div id="teacher-avisos-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+var currentRole='student';
+var USERS={student:{user:'aluno',pass:'senha123'},teacher:{user:'professor',pass:'senha123'}};
+var shared={
+  avisos:[
+    {titulo:'Reunião de pais e mestres',msg:'Informamos que a reunião de pais e mestres está marcada para o dia 20/05. Presença obrigatória.',cat:'blue',data:'08/05/2025'},
+    {titulo:'Semana de provas — Atenção ao calendário',msg:'A semana de avaliações do 3º bimestre ocorrerá entre os dias 18 e 22 de junho. Confira o calendário.',cat:'yellow',data:'05/05/2025'},
+    {titulo:'Feriado municipal — Sem aulas',msg:'Na próxima segunda-feira (13/05) não haverá aulas em razão do feriado municipal.',cat:'green',data:'03/05/2025'}
+  ],
+  provas:[
+    {disc:'Matemática',dia:'18',mes:'JUN',hora:'07:30',obs:'Álgebra e funções'},
+    {disc:'Português',dia:'19',mes:'JUN',hora:'07:30',obs:'Interpretação e redação'},
+    {disc:'Física',dia:'20',mes:'JUN',hora:'09:15',obs:'Mecânica clássica'},
+    {disc:'Química',dia:'21',mes:'JUN',hora:'07:30',obs:'Estequiometria'}
+  ]
+};
+
+function goTo(s){
+  document.querySelectorAll('.screen').forEach(function(x){x.classList.remove('active');});
+  document.getElementById('screen-'+s).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goToLogin(role){
+  currentRole=role;
+  var badge=document.getElementById('login-badge');
+  var btn=document.getElementById('login-btn');
+  var hint=document.getElementById('login-hint');
+  if(role==='student'){
+    badge.className='lf-badge student';badge.innerHTML='👨‍🎓 Área do Aluno';
+    btn.className='btn-login student';hint.textContent='Dica: aluno / senha123';
+  } else {
+    badge.className='lf-badge teacher';badge.innerHTML='👩‍🏫 Área do Professor';
+    btn.className='btn-login teacher';hint.textContent='Dica: professor / senha123';
+  }
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+  document.getElementById('error-msg').style.display='none';
+  goTo('login');
+}
+
+function doLogin(){
+  var u=document.getElementById('login-user').value.trim();
+  var p=document.getElementById('login-pass').value.trim();
+  if(u===USERS[currentRole].user&&p===USERS[currentRole].pass){
+    renderAvisos();renderProvas();goTo(currentRole);
+  } else {
+    document.getElementById('error-msg').style.display='block';
+  }
+}
+
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('screen-login').classList.contains('active')&&e.key==='Enter')doLogin();
+});
+
+function showPage(role,page,el){
+  document.querySelectorAll('#screen-'+role+' .page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById(role+'-'+page).classList.add('active');
+  document.querySelectorAll('#screen-'+role+' .nav-item').forEach(function(n){n.classList.remove('active');});
+  el.classList.add('active');
+}
+
+function renderAvisos(){
+  ['student','teacher'].forEach(function(r){
+    var el=document.getElementById(r+'-avisos-list');
+    if(!el)return;
+    el.innerHTML=shared.avisos.map(function(a){
+      return '<div class="notice-item '+a.cat+'"><div class="notice-top"><div class="notice-title">'+a.titulo+'</div><div class="notice-date">'+a.data+'</div></div><div class="notice-body">'+a.msg+'</div></div>';
+    }).join('');
+  });
+}
+
+function renderProvas(){
+  ['student-provas-list','teacher-provas-list'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.innerHTML=shared.provas.map(function(p){
+      return '<div class="prova-item"><div class="prova-date-box"><div class="prova-day">'+p.dia+'</div><div class="prova-month">'+p.mes+'</div></div><div class="prova-info"><div class="prova-name">'+p.disc+'</div><div class="prova-meta">⏰ '+p.hora+' · '+p.obs+'</div></div><span class="badge badge-blue">Agendada</span></div>';
+    }).join('');
+  });
+}
+
+function showToast(id){
+  var t=document.getElementById(id);t.style.display='block';
+  setTimeout(function(){t.style.display='none';},3000);
+}
+
+function salvarNota(){
+  var disc=document.getElementById('nota-disc').value;
+  var bim=document.getElementById('nota-bim').value;
+  var aluno=document.getElementById('nota-aluno').value;
+  var nota=document.getElementById('nota-valor').value;
+  if(!nota)return;
+  var today=new Date().toLocaleDateString('pt-BR');
+  document.getElementById('notas-recentes').insertAdjacentHTML('afterbegin',
+    '<tr><td>'+aluno+'</td><td>'+disc+'</td><td>'+bim+'</td><td><b>'+parseFloat(nota).toFixed(1)+'</b></td><td>'+today+'</td></tr>');
+  document.getElementById('nota-valor').value='';
+  showToast('nota-toast');
+}
+
+function salvarProva(){
+  var disc=document.getElementById('prova-disc').value;
+  var dataVal=document.getElementById('prova-data').value;
+  var hora=document.getElementById('prova-hora').value;
+  var obs=document.getElementById('prova-obs').value||'Sem observação';
+  if(!dataVal)return;
+  var d=new Date(dataVal+'T12:00:00');
+  var dia=String(d.getDate()).padStart(2,'0');
+  var mes=d.toLocaleString('pt-BR',{month:'short'}).toUpperCase().replace('.','');
+  shared.provas.unshift({disc:disc,dia:dia,mes:mes,hora:hora,obs:obs});
+  renderProvas();
+  document.getElementById('prova-data').value='';
+  document.getElementById('prova-obs').value='';
+  showToast('prova-toast');
+}
+
+function salvarAviso(){
+  var titulo=document.getElementById('aviso-titulo').value.trim();
+  var msg=document.getElementById('aviso-msg').value.trim();
+  var cat=document.getElementById('aviso-cat').value;
+  if(!titulo||!msg)return;
+  shared.avisos.unshift({titulo:titulo,msg:msg,cat:cat,data:new Date().toLocaleDateString('pt-BR')});
+  renderAvisos();
+  document.getElementById('aviso-titulo').value='';
+  document.getElementById('aviso-msg').value='';
+  showToast('aviso-toast');
+}
+</script>
+</body>
+</html>
