@@ -12,7 +12,7 @@ body{font-family:'Lato',sans-serif;background:var(--off-white);color:var(--text-
 .screen{display:none;}.screen.active{display:block;}
 
 /* NAV */
-.site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(15,5,5,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.2);}
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;overflow:visible;background:rgba(15,5,5,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.2);}
 .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
 .nav-crest{width:36px;height:36px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
 .nav-logo-text{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--white);letter-spacing:1px;text-transform:uppercase;line-height:1.2;}
@@ -199,10 +199,10 @@ tr:hover td{background:#faf8f5;}
       <div><div class="nav-logo-text">Portal do Aluno</div><div class="nav-logo-sub">Sistema Acadêmico</div></div>
     </div>
     <div class="nav-links">
-      <span class="nav-link">Início</span>
-      <span class="nav-link">Cursos</span>
-      <span class="nav-link">Sobre</span>
-      <span class="nav-link">Contato</span>
+      <span class="nav-link" onclick="goTo('menu')">Início</span>
+      <span class="nav-link" onclick="openModal('cursos')">Cursos</span>
+      <span class="nav-link" onclick="openModal('sobre')">Sobre</span>
+      <span class="nav-link" onclick="openModal('contato')">Contato</span>
     </div>
     <div class="nav-actions">
       <button class="btn-nav" onclick="goToLogin('student')">Aluno</button>
@@ -609,6 +609,85 @@ function salvarAviso(){
   document.getElementById('aviso-msg').value='';
   showToast('aviso-toast');
 }
+
+function openModal(id) {
+  document.getElementById('modal-overlay').style.display = 'block';
+  document.getElementById('modal-' + id).style.display = 'block';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').style.display = 'none';
+  ['cursos','sobre','contato'].forEach(function(id){
+    document.getElementById('modal-' + id).style.display = 'none';
+  });
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
 </script>
+
+<!-- MODAIS -->
+<div id="modal-overlay" onclick="closeModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;backdrop-filter:blur(4px);"></div>
+
+<div id="modal-cursos" class="modal-box" style="display:none;">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-eyebrow">Oferta Acadêmica</div>
+  <h2 class="modal-title">Nossos Cursos</h2>
+  <div class="modal-grid">
+    <div class="modal-item"><div class="modal-item-icon">📐</div><div class="modal-item-name">Matemática</div><div class="modal-item-desc">Álgebra, cálculo, geometria e raciocínio lógico aplicado.</div></div>
+    <div class="modal-item"><div class="modal-item-icon">📖</div><div class="modal-item-name">Português</div><div class="modal-item-desc">Gramática, interpretação, redação e literatura brasileira.</div></div>
+    <div class="modal-item"><div class="modal-item-icon">⚗️</div><div class="modal-item-name">Ciências da Natureza</div><div class="modal-item-desc">Física, Química e Biologia integradas ao cotidiano.</div></div>
+    <div class="modal-item"><div class="modal-item-icon">🌎</div><div class="modal-item-name">Ciências Humanas</div><div class="modal-item-desc">História, Geografia e atualidades com visão crítica.</div></div>
+    <div class="modal-item"><div class="modal-item-icon">🌐</div><div class="modal-item-name">Inglês</div><div class="modal-item-desc">Conversação, gramática e preparação para exames internacionais.</div></div>
+    <div class="modal-item"><div class="modal-item-icon">💻</div><div class="modal-item-name">Tecnologia</div><div class="modal-item-desc">Informática, lógica de programação e ferramentas digitais.</div></div>
+  </div>
+</div>
+
+<div id="modal-sobre" class="modal-box" style="display:none;">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-eyebrow">Nossa História</div>
+  <h2 class="modal-title">Sobre o Portal</h2>
+  <p class="modal-text">O <strong>Portal do Aluno</strong> nasceu em 2026 com a missão de transformar a experiência acadêmica, tornando o acesso à informação mais simples, rápido e eficiente para alunos e professores.</p>
+  <p class="modal-text">Com o lema <em>"Conhecimento em Evolução"</em>, nossa plataforma integra boletins, horários, provas e comunicados em um único ambiente digital seguro e intuitivo.</p>
+  <div class="modal-stats">
+    <div class="modal-stat"><div class="modal-stat-num">2.400+</div><div class="modal-stat-label">Alunos Ativos</div></div>
+    <div class="modal-stat"><div class="modal-stat-num">120</div><div class="modal-stat-label">Professores</div></div>
+    <div class="modal-stat"><div class="modal-stat-num">Est. 2026</div><div class="modal-stat-label">Fundação</div></div>
+  </div>
+</div>
+
+<div id="modal-contato" class="modal-box" style="display:none;">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-eyebrow">Fale Conosco</div>
+  <h2 class="modal-title">Contato</h2>
+  <div class="modal-contact-list">
+    <div class="modal-contact-item"><span class="modal-contact-icon">📧</span><div><div class="modal-contact-label">E-mail</div><div class="modal-contact-val">contato@portaldoaluno.edu.br</div></div></div>
+    <div class="modal-contact-item"><span class="modal-contact-icon">📞</span><div><div class="modal-contact-label">Telefone</div><div class="modal-contact-val">(41) 3000-0000</div></div></div>
+    <div class="modal-contact-item"><span class="modal-contact-icon">📍</span><div><div class="modal-contact-label">Endereço</div><div class="modal-contact-val">Av. do Conhecimento, 2026 — Campo Largo, PR</div></div></div>
+    <div class="modal-contact-item"><span class="modal-contact-icon">⏰</span><div><div class="modal-contact-label">Horário</div><div class="modal-contact-val">Segunda a Sexta, 07h30 às 18h00</div></div></div>
+  </div>
+</div>
+
+<style>
+.modal-box{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2001;background:#fff;width:90%;max-width:640px;max-height:85vh;overflow-y:auto;padding:40px;box-shadow:0 24px 80px rgba(0,0,0,.3);}
+.modal-close{position:absolute;top:16px;right:20px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-light);transition:color .2s;}
+.modal-close:hover{color:var(--crimson);}
+.modal-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--crimson);margin-bottom:6px;}
+.modal-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--text-dark);margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--crimson);}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.modal-item{background:var(--off-white);border:1px solid var(--warm-gray);padding:18px;border-top:3px solid var(--crimson);}
+.modal-item-icon{font-size:24px;margin-bottom:8px;}
+.modal-item-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:4px;}
+.modal-item-desc{font-size:12px;color:var(--text-light);line-height:1.6;}
+.modal-text{font-size:14px;color:var(--text-mid);line-height:1.8;margin-bottom:14px;}
+.modal-stats{display:flex;gap:0;border:1px solid var(--warm-gray);margin-top:8px;}
+.modal-stat{flex:1;padding:20px;text-align:center;border-right:1px solid var(--warm-gray);}
+.modal-stat:last-child{border-right:none;}
+.modal-stat-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--crimson);}
+.modal-stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);margin-top:3px;}
+.modal-contact-list{display:flex;flex-direction:column;gap:16px;}
+.modal-contact-item{display:flex;align-items:center;gap:16px;padding:16px;background:var(--off-white);border:1px solid var(--warm-gray);border-left:3px solid var(--crimson);}
+.modal-contact-icon{font-size:22px;flex-shrink:0;}
+.modal-contact-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);margin-bottom:3px;}
+.modal-contact-val{font-size:14px;color:var(--text-dark);font-weight:700;}
+@media(max-width:600px){.modal-grid{grid-template-columns:1fr;}.modal-box{padding:24px;}}
+</style>
 </body>
 </html>
